@@ -2,9 +2,29 @@
   text-align: center;
 }
 
+button {
+  margin: 1rem;
+  width: 80px;
+  height: 40px;
+  cursor: pointer;
+}
+
+table {
+ text-align: left;
+}
+
+td {
+  padding: 5px 55px 5px 0;
+  border-bottom: solid 1px rgb(68, 67, 67);
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.Button-container {
+  display: flex;
 }
 
 @media (prefers-reduced-motion: no-preference) {

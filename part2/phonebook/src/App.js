@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Persons from "./components/Persons";
 import Filter from "./components/Filter";
 import PersonsForm from "./components/PersonsForm";
-import axios from "axios";
+import service from "./services/phonebook.service";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,11 +12,10 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
+    service.getAll()
       .then(response => {
-        setPersons(response.data);
-        setShownPersons(response.data);
+        setPersons(response);
+        setShownPersons(response);
       })
   },[])
 
@@ -36,12 +35,37 @@ const App = () => {
     setShownPersons(persons.filter(person => person.name.toUpperCase().includes(search)));
   }
 
+  const handleDelete = (id) => {
+    service.remove(id)
+      .then(status => {
+        if(status === 200) {
+          const updatedPersons = persons.filter(person => person.id !== id)
+          setPersons(updatedPersons);
+          setShownPersons(updatedPersons);
+        }
+      });
+  };
+
   const handleAddButton = (event) => {
     event.preventDefault();
     const newPerson = { name: newName, number: newNumber };
 
     if (persons.find((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook.`);
+      const foundPerson = persons.find((person) => person.name === newName)
+      if (window.confirm
+        (`${newName} is already added to phonebook, replace the old number with a new one?`)
+      ) {
+        service.update(foundPerson.id, newPerson)
+          .then(response => {
+            const updatedPersons = persons
+              .map(person => person.id !== foundPerson.id
+                ? person
+                : response  
+              )
+            setPersons(updatedPersons);
+            setShownPersons(updatedPersons);
+          })
+      }
       setNewName("");
       setNewNumber("");
       return;
@@ -57,10 +81,13 @@ const App = () => {
       return;
     }
 
-    setPersons(persons.concat(newPerson));
-    setShownPersons(persons.concat(newPerson));
-    setNewName("");
-    setNewNumber("");
+    service.create(newPerson)
+      .then(response => {
+        setPersons(persons.concat(response));
+        setShownPersons(persons.concat(response));
+        setNewName("");
+        setNewNumber("");
+      });
   };
 
   return (
@@ -76,7 +103,7 @@ const App = () => {
         addButton={handleAddButton}
       />
       <h2 className="Numbers">Numbers</h2>
-      <Persons persons={shownPersons} />
+      <Persons persons={shownPersons} remove={handleDelete}/>
     </div>
   );
 };

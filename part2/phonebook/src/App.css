@@ -1,4 +1,5 @@
 .App {
+  position: relative;
   text-align: left;
   background-color: #282c34;
   min-height: 100vh;
@@ -62,4 +63,14 @@ h2:first-child {
 
 .delete-button {
   margin-left: 10px;
+}
+
+.message {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  border-radius: 10px;
+  width: 350px;
+  min-height: 50px;
+  padding: 1rem;
 }

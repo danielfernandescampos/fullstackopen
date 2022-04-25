@@ -4,20 +4,21 @@ import Persons from "./components/Persons";
 import Filter from "./components/Filter";
 import PersonsForm from "./components/PersonsForm";
 import service from "./services/phonebook.service";
+import Message from "./components/Message";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [shownPersons, setShownPersons] = useState(persons)
+  const [shownPersons, setShownPersons] = useState(persons);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
-    service.getAll()
-      .then(response => {
-        setPersons(response);
-        setShownPersons(response);
-      })
-  },[])
+    service.getAll().then((response) => {
+      setPersons(response);
+      setShownPersons(response);
+    });
+  }, []);
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -28,21 +29,40 @@ const App = () => {
 
   const handleSearchChange = (event) => {
     let search = event.target.value.toUpperCase();
-    if(!search) {
+    if (!search) {
       setShownPersons(persons);
       return;
     }
-    setShownPersons(persons.filter(person => person.name.toUpperCase().includes(search)));
-  }
+    setShownPersons(
+      persons.filter((person) => person.name.toUpperCase().includes(search))
+    );
+  };
 
   const handleDelete = (id) => {
-    service.remove(id)
-      .then(status => {
-        if(status === 200) {
-          const updatedPersons = persons.filter(person => person.id !== id)
+    service
+      .remove(id)
+      .then((status) => {
+        if (status === 200) {
+          const updatedPersons = persons.filter((person) => person.id !== id);
           setPersons(updatedPersons);
           setShownPersons(updatedPersons);
         }
+      })
+      .then(() => {
+        const newMessage = {
+          message: `Deleted successfully`,
+          type: "success",
+        };
+        setMessage(newMessage);
+        setTimeout(() => setMessage(null), 2000);
+      })
+      .catch(() => {
+        const newMessage = {
+          message: `An error ocurred please try again later.`,
+          type: "error",
+        };
+        setMessage(newMessage);
+        setTimeout(() => setMessage(null), 2000);
       });
   };
 
@@ -51,20 +71,19 @@ const App = () => {
     const newPerson = { name: newName, number: newNumber };
 
     if (persons.find((person) => person.name === newName)) {
-      const foundPerson = persons.find((person) => person.name === newName)
-      if (window.confirm
-        (`${newName} is already added to phonebook, replace the old number with a new one?`)
+      const foundPerson = persons.find((person) => person.name === newName);
+      if (
+        window.confirm(
+          `${newName} is already added to phonebook, replace the old number with a new one?`
+        )
       ) {
-        service.update(foundPerson.id, newPerson)
-          .then(response => {
-            const updatedPersons = persons
-              .map(person => person.id !== foundPerson.id
-                ? person
-                : response  
-              )
-            setPersons(updatedPersons);
-            setShownPersons(updatedPersons);
-          })
+        service.update(foundPerson.id, newPerson).then((response) => {
+          const updatedPersons = persons.map((person) =>
+            person.id !== foundPerson.id ? person : response
+          );
+          setPersons(updatedPersons);
+          setShownPersons(updatedPersons);
+        });
       }
       setNewName("");
       setNewNumber("");
@@ -81,12 +100,22 @@ const App = () => {
       return;
     }
 
-    service.create(newPerson)
-      .then(response => {
+    service
+      .create(newPerson)
+      .then((response) => {
         setPersons(persons.concat(response));
         setShownPersons(persons.concat(response));
         setNewName("");
         setNewNumber("");
+        return response;
+      })
+      .then((res) => {
+        const newMessage = {
+          message: `${res.name} was added successfully`,
+          type: "success",
+        };
+        setMessage(newMessage);
+        setTimeout(() => setMessage(null), 2000);
       });
   };
 
@@ -95,7 +124,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter onSearch={handleSearchChange} />
       <h2>Add new</h2>
-      <PersonsForm 
+      <PersonsForm
         nameChange={handleNameChange}
         nameValue={newName}
         numberChange={handleNumberChange}
@@ -103,7 +132,8 @@ const App = () => {
         addButton={handleAddButton}
       />
       <h2 className="Numbers">Numbers</h2>
-      <Persons persons={shownPersons} remove={handleDelete}/>
+      <Persons persons={shownPersons} remove={handleDelete} />
+      {message && <Message message={message} />}
     </div>
   );
 };

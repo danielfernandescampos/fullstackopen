@@ -42,7 +42,7 @@ const App = () => {
     service
       .remove(id)
       .then((status) => {
-        if (status === 200) {
+        if (status === 204) {
           const updatedPersons = persons.filter((person) => person.id !== id);
           setPersons(updatedPersons);
           setShownPersons(updatedPersons);

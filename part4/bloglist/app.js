@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 
 logger.info('connecting to mongoDB')
 
-mongoose.connect(config.mongoUrl)
+mongoose.connect(config.MONGO_URI)
     .then(result => logger.info('successful connection'))
     .catch(error => logger.error('error trying to connect to mongoDB', error.message))
 

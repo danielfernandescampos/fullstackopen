@@ -3,12 +3,15 @@ const supertest = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blogs");
 const api = supertest(app);
+const jwt = require("jsonwebtoken");
+const User = require("../models/users");
 
 const initialBlogs = [
   {
     title: "React patterns",
     author: "Daniel Lo Nigro",
     likes: 2,
+    user: '62b44d07c76a78278c166a54'
   },
   {
     title: "Go To Statement Considered Harmful",
@@ -34,7 +37,7 @@ beforeEach(async () => {
 });
 
 test("blogs are returned as json", async () => {
-  await api
+  const blogs = await api
     .get("/api/blogs/")
     .expect(200)
     .expect("Content-Type", /application\/json/);
@@ -59,6 +62,15 @@ describe("when there is initially some blogs saved", () => {
 })
 
 describe("addition of a new blog", () => {
+
+  const jwtSpy = jest.spyOn(jwt, 'verify').mockReturnValue({ id: '62b44d07c76a78278c166a54' })
+  const userSpy = jest.spyOn(User, 'findById')
+    .mockReturnValue({ 
+      username: 'danielfcampos', 
+      id: '62b44d07c76a78278c166a54', 
+      blogs: [],
+      save: () => {} 
+    })
   test("verify that HTTP POST creates a blog", async () => {
     const mockBlog = {
       title: "React attack",
@@ -69,6 +81,7 @@ describe("addition of a new blog", () => {
     await api
       .post("/api/blogs/")
       .send(mockBlog)
+      .set('Authorization', "bearer 123")
       .expect(201)
       .expect("Content-Type", /application\/json/);
   
@@ -87,6 +100,7 @@ describe("addition of a new blog", () => {
     const response = await api
       .post("/api/blogs/")
       .send(mockBlog)
+      .set('Authorization', "bearer 123")
       .expect(201)
       .expect("Content-Type", /application\/json/);
   
@@ -97,17 +111,23 @@ describe("addition of a new blog", () => {
       title: "React attack",
       author: "Bruce Lee",
     };
-    await api.post("/api/blogs/").send(mockBlog).expect(400)
+    await api
+      .post("/api/blogs/")
+      .send(mockBlog)
+      .set('Authorization', "bearer 123")
+      .expect(400)
     const response = await api.get("/api/blogs/")
     expect(response.body).toHaveLength(initialBlogs.length)
   });
 })
 
 describe("deletion of a blog", () => {
+  const jwtSpy = jest.spyOn(jwt, 'verify').mockReturnValue({ id: '62b44d07c76a78278c166a54' })
   test("delete a blog with the id", async () => {
     const response = await api.get("/api/blogs")
     await api
       .delete(`/api/blogs/${response.body[0].id}`)
+      .set('Authorization', "bearer 123")
       .expect(204)
     const responseDeleted = await api.get("/api/blogs") 
     expect(responseDeleted.body.length).toBe(initialBlogs.length - 1)

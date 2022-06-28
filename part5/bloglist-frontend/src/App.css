@@ -1,0 +1,9 @@
+.message {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    border-radius: 10px;
+    width: 350px;
+    min-height: 50px;
+    padding: 1rem;
+  }

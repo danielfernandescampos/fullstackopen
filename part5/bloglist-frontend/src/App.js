@@ -6,16 +6,12 @@ import Message from "./components/Message";
 import NewBlog from "./components/NewBlog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import Togglable from "./components/Togglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [user, setUser] = useState(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [blogTitle, setBlogTitle] = useState("");
-  const [blogAuthor, setBlogAuthor] = useState("");
-  const [blogUrl, setBlogUrl] = useState("");
   const [message, setMessage] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
@@ -32,39 +28,9 @@ const App = () => {
     }
   }, []);
 
-  const handleUsernameChange = (value) => setUsername(value);
-  const handlePasswordChange = (value) => setPassword(value);
-  const handleBlogTitleChange = (value) => setBlogTitle(value);
-  const handleBlogAuthorChange = (value) => setBlogAuthor(value);
-  const handleBlogUrlChange = (value) => setBlogUrl(value);
-  const handleLogout = () => {
-    window.localStorage.removeItem("loggedUser");
-    setUser(null);
-  };
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  const handleAddBlog = async (newBlog) => {
     try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedUser", JSON.stringify(user));
-      setUser(user);
-      loginService.setToken(user.token);
-    } catch (error) {
-      const newMessage = {
-        message: 'username and password don\'t match',
-        type: "error",
-      };
-      setMessage(newMessage);
-      setTimeout(() => setMessage(null), 2000);
-    }
-  };
-  const handleAddBlog = async (event) => {
-    event.preventDefault();
-    try {
-      await blogService.saveBlog({
-        title: blogTitle,
-        author: blogAuthor,
-        url: blogUrl,
-      });
+      await blogService.saveBlog(newBlog);
       const newMessage = {
         message: `new blog added`,
         type: "success",
@@ -73,7 +39,7 @@ const App = () => {
       setTimeout(() => setMessage(null), 2000);
     } catch (error) {
       const newMessage = {
-        message: 'something went wrong',
+        message: "something went wrong",
         type: "error",
       };
       setMessage(newMessage);
@@ -81,37 +47,112 @@ const App = () => {
     }
   };
 
+  const handleLogin = async (userCredentials) => {
+    try {
+      const user = await loginService.login(userCredentials);
+      window.localStorage.setItem("loggedUser", JSON.stringify(user));
+      setUser(user);
+      blogService.setToken(user.token);
+    } catch (error) {
+      const newMessage = {
+        message: "username and password don't match",
+        type: "error",
+      };
+      setMessage(newMessage);
+      setTimeout(() => setMessage(null), 2000);
+    }
+  };
+
+  const handleLogout = () => {
+    window.localStorage.removeItem("loggedUser");
+    setUser(null);
+  };
+
+  const handleLike = async (updatedBlog) => {
+    console.log(updatedBlog);
+    try {
+      await blogService.updateBlog(updatedBlog);
+      const newMessage = {
+        message: `like successful`,
+        type: "success",
+      };
+      setMessage(newMessage);
+      setTimeout(() => setMessage(null), 2000);
+      const indexToUpdate = blogs.findIndex(
+        (blog) => blog.id === updatedBlog.id
+      );
+      const update = blogs;
+      update[indexToUpdate] = updatedBlog;
+      setBlogs(update);
+    } catch (err) {
+      console.log(err);
+      const newMessage = {
+        message: "não roloou",
+        type: "error",
+      };
+      setMessage(newMessage);
+      setTimeout(() => setMessage(null), 2000);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("do you really want to delete the blog?")) {
+      try {
+        await blogService.deleteBlog(id);
+        const newMessage = {
+          message: `deleted successfully`,
+          type: "success",
+        };
+        setMessage(newMessage);
+        setTimeout(() => setMessage(null), 2000);
+      } catch (err) {
+        console.log(err);
+        const newMessage = {
+          message: "não roloou",
+          type: "error",
+        };
+        setMessage(newMessage);
+        setTimeout(() => setMessage(null), 2000);
+      }
+    }
+  };
+
+  const handleSort = () => {
+    const blogs2 = Array.from(blogs);
+    const orderByLikes = blogs2.sort(function (a, b) {
+      return b.likes - a.likes;
+    });
+    setBlogs(orderByLikes);
+  };
+
   return (
     <div>
       <h2>blogs page</h2>
       {user === null ? (
-        <Login
-          usernameChange={handleUsernameChange}
-          username={username}
-          passwordChange={handlePasswordChange}
-          password={password}
-          handleLogin={handleLogin}
-        />
+        <Login handleLogin={handleLogin} />
       ) : (
         <div>
           <button onClick={handleLogout}>Log out</button>
           <p>
             <strong>{user.name}</strong> is logged in
           </p>
-          <NewBlog
-            blogTitle={blogTitle}
-            blogAuthor={blogAuthor}
-            blogUrl={blogUrl}
-            blogTitleChange={handleBlogTitleChange}
-            blogAuthorChange={handleBlogAuthorChange}
-            blogUrlChange={handleBlogUrlChange}
-            handleAddBlog={handleAddBlog}
-          />
+          <Togglable buttonLable="New blog">
+            <NewBlog handleAddBlog={handleAddBlog} />
+          </Togglable>
           <br></br>
           <h3>blogs list</h3>
+          <button onClick={handleSort}>sort by likes</button>
+          <br></br>
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog
+              key={blog.id}
+              user={user}
+              blog={blog}
+              handleLikeButton={handleLike}
+              handleDeleteButton={handleDelete}
+            />
           ))}
+          {/* <Blog blogs={blogs}/> */}
         </div>
       )}
       {message && <Message message={message} />}

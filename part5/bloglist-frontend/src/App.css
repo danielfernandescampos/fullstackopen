@@ -4,6 +4,24 @@
     right: 20px;
     border-radius: 10px;
     width: 350px;
-    min-height: 50px;
+    min-height: 30px;
     padding: 1rem;
+    border: 1px solid rgb(93, 93, 93);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  .toggable {
+    padding-bottom: 1rem;
+  }
+
+  .blog-details {
+    margin: 5px 0 20px 20px;
+  }
+  
+  .blog-details > p {
+    margin: 2px 0;
+  }
+
+  li {
+    margin-bottom: 10px
   }

@@ -1,7 +1,7 @@
 const Message = (props) => {
   const colorStyle = {
     backgroundColor:
-      props.message.type === "error" ? "rgb(186, 96, 96)" : "rgb(75, 155, 80)",
+      props.message.type === "error" ? "#FA7b6c" : "#79D8B0",
   };
 
   return (

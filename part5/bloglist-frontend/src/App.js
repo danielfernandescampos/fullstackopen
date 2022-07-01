@@ -1,5 +1,5 @@
 import "./App.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import Login from "./components/Login";
 import Message from "./components/Message";
@@ -12,6 +12,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [message, setMessage] = useState(null);
   const [user, setUser] = useState(null);
+  const blogRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
@@ -32,11 +33,12 @@ const App = () => {
     try {
       await blogService.saveBlog(newBlog);
       const newMessage = {
-        message: `new blog added`,
+        message: "new blog added",
         type: "success",
       };
       setMessage(newMessage);
       setTimeout(() => setMessage(null), 2000);
+      blogRef.current.changeVisibility();
     } catch (error) {
       const newMessage = {
         message: "something went wrong",
@@ -73,7 +75,7 @@ const App = () => {
     try {
       await blogService.updateBlog(updatedBlog);
       const newMessage = {
-        message: `like successful`,
+        message: "like successfully",
         type: "success",
       };
       setMessage(newMessage);
@@ -100,7 +102,7 @@ const App = () => {
       try {
         await blogService.deleteBlog(id);
         const newMessage = {
-          message: `deleted successfully`,
+          message: "deleted successfully",
           type: "success",
         };
         setMessage(newMessage);
@@ -136,7 +138,7 @@ const App = () => {
           <p>
             <strong>{user.name}</strong> is logged in
           </p>
-          <Togglable buttonLable="New blog">
+          <Togglable buttonLabel="New blog" ref={blogRef}>
             <NewBlog handleAddBlog={handleAddBlog} />
           </Togglable>
           <br></br>
@@ -152,7 +154,6 @@ const App = () => {
               handleDeleteButton={handleDelete}
             />
           ))}
-          {/* <Blog blogs={blogs}/> */}
         </div>
       )}
       {message && <Message message={message} />}

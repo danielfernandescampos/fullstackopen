@@ -26,6 +26,7 @@ const NewBlog = ({ handleAddBlog }) => {
         <label htmlFor="Title">Title: </label>
         <input
           type="text"
+          id="title"
           value={blogTitle}
           name="Title"
           onChange={({ target }) => handleBlogTitleChange(target.value)}
@@ -34,6 +35,7 @@ const NewBlog = ({ handleAddBlog }) => {
         <label htmlFor="Author">Author: </label>
         <input
           type="text"
+          id="author"
           value={blogAuthor}
           name="Author"
           onChange={({ target }) => handleBlogAuthorChange(target.value)}
@@ -42,6 +44,7 @@ const NewBlog = ({ handleAddBlog }) => {
         <label htmlFor="Url">Url: </label>
         <input
           type="text"
+          id="url"
           value={blogUrl}
           name="Url"
           onChange={({ target }) => handleBlogUrlChange(target.value)}

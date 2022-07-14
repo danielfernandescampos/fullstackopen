@@ -18,6 +18,7 @@ const Login = ({ handleLogin }) => {
       <input
         type="text"
         value={username}
+        id="username"
         name="Username"
         onChange={({ target }) => handleUsernameChange(target.value)}
       />
@@ -26,11 +27,12 @@ const Login = ({ handleLogin }) => {
       <input
         type="password"
         value={password}
+        id="password"
         name="Password"
         onChange={({ target }) => handlePasswordChange(target.value)}
       />
       <br></br>
-      <button type="submit">Login</button>
+      <button id="login-button" type="submit">Login</button>
     </form>
   );
 };

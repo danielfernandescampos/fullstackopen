@@ -22,7 +22,7 @@ const Blog = ({ blog, user, handleLikeButton, handleDeleteButton }) => {
 
   return (
     <>
-      <li>
+      <li className="blog">
         {blog.title} <button onClick={handleShowDetails}>view</button>
       </li>
       {showDetails && (
@@ -30,9 +30,9 @@ const Blog = ({ blog, user, handleLikeButton, handleDeleteButton }) => {
           <p>author: {blog.author || "-"}</p>
           <p>url: {blog.url || "-"}</p>
           <p>likes: {blog.likes}</p>
-          <button onClick={handleLike}>like</button>
+          <button id="like-button" onClick={handleLike}>like</button>
           {user.username === blog.user?.username && (
-            <button onClick={handleDelete} style={{ background: "#FA7b6c" }}>
+            <button id="delete-button" onClick={handleDelete} style={{ background: "#FA7b6c" }}>
               delete
             </button>
           )}

@@ -31,11 +31,12 @@ const App = () => {
 
   const handleAddBlog = async (newBlog) => {
     try {
-      await blogService.saveBlog(newBlog);
+      const addedBlog = await blogService.saveBlog(newBlog);
       const newMessage = {
         message: "new blog added",
         type: "success",
       };
+      setBlogs([...blogs, addedBlog])
       setMessage(newMessage);
       setTimeout(() => setMessage(null), 2000);
       blogRef.current.changeVisibility();
@@ -134,7 +135,7 @@ const App = () => {
         <Login handleLogin={handleLogin} />
       ) : (
         <div>
-          <button onClick={handleLogout}>Log out</button>
+          <button id="logout-button" onClick={handleLogout}>Log out</button>
           <p>
             <strong>{user.name}</strong> is logged in
           </p>

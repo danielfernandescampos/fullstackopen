@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import anecdotesService from "../services/anecdotesService";
 
 const anecdotesAtStart = [];
 
@@ -35,8 +36,8 @@ const anecdoteSlice = createSlice({
       state.push(action.payload);
     },
     setAnecdotes(state, action) {
-      return action.payload
-    }
+      return action.payload;
+    },
   },
 });
 
@@ -48,66 +49,61 @@ const notificationSlice = createSlice({
   },
   reducers: {
     setNotification(state, action) {
-      return {...state, message: action.payload};
+      return { ...state, message: action.payload };
     },
     showNotification(state, action) {
-      return {...state, show: true};
+      return { ...state, show: true };
     },
     hideNotification(state, action) {
-      return {...state, show: false};
-    }
+      return { ...state, show: false };
+    },
   },
 });
 
 const filterSlice = createSlice({
   name: "filter",
-  initialState: '',
+  initialState: "",
   reducers: {
     setFilter(state, action) {
-      return action.payload
+      return action.payload;
     },
   },
 });
 
-// export const voteAnecdote = (id) => {
-//   return {
-//     type: 'VOTE',
-//     data: id
-//   }
-// }
-
-// export const newAnecdote = (anecdote) => {
-//   return {
-//     type: 'NEW_ANECDOTE',
-//     data: {
-//       content: anecdote,
-//       id: getId(),
-//       votes: 0
-//     }
-//   }
-// }
-
-// const initialState = anecdotesAtStart.map(asObject)
-
-// const reducer = (state = initialState, action) => {
-//   switch(action.type) {
-//     case 'VOTE':
-//       return orderByVotes(state.map(anecdote => anecdote.id !== action.data
-//         ? anecdote : {...anecdote, votes: anecdote.votes +1}))
-//     case 'NEW_ANECDOTE':
-//       return state.concat(action.data)
-//     default:
-//         return state
-//   }
-//   // console.log('state now: ', state)
-//   // console.log('action', action)
-// }
-
-// export default reducer
-
 export const anecdoteReducer = anecdoteSlice.reducer;
-export const { voteAnecdote, newAnecdote, setAnecdotes } = anecdoteSlice.actions;
+export const { voteAnecdote, newAnecdote, setAnecdotes } =
+  anecdoteSlice.actions;
 export const notificationReducer = notificationSlice.reducer;
-export const { setNotification, showNotification, hideNotification } = notificationSlice.actions;
+export const { setNotification, showNotification, hideNotification } =
+  notificationSlice.actions;
 export const filterReducer = filterSlice.reducer;
 export const { setFilter, resetFilter } = filterSlice.actions;
+
+export const initializeAnecdotes = () => {
+  return async (dispatch) => {
+    const anecdotes = await anecdotesService.getAll();
+    dispatch(setAnecdotes(anecdotes));
+  };
+};
+
+export const createAnecdote = (content) => {
+  return async (dispatch) => {
+    const response = await anecdotesService.createAnecdote(content);
+    dispatch(newAnecdote(response));
+  };
+};
+
+export const addVote = (id, content, votes) => {
+  return async (dispatch) => {
+    const response = await anecdotesService.voteAnecdote(votes + 1, id);
+    dispatch(voteAnecdote(response.id));
+  };
+};
+
+export const sendNotification = (message, time) => {
+  return async (dispatch) => {
+    dispatch(setNotification(message));
+    dispatch(showNotification());
+    setTimeout(() => dispatch(hideNotification()), time);
+  };
+};

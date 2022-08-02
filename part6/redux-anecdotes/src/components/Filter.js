@@ -7,7 +7,8 @@ const Filter = () => {
         dispatch(setFilter(event.target.value.toUpperCase()));
     }
     const style = {
-      marginBottom: 10
+      marginBottom: 10,
+      fontWeight: 'bold'
     }
   
     return (

@@ -46,6 +46,7 @@ const notificationSlice = createSlice({
   initialState: {
     message: "",
     show: false,
+    timeoutID: null,
   },
   reducers: {
     setNotification(state, action) {
@@ -56,6 +57,9 @@ const notificationSlice = createSlice({
     },
     hideNotification(state, action) {
       return { ...state, show: false };
+    },
+    setTimeoutID(state, action) {
+      return { ...state, timeoutID: action.payload };
     },
   },
 });
@@ -74,7 +78,7 @@ export const anecdoteReducer = anecdoteSlice.reducer;
 export const { voteAnecdote, newAnecdote, setAnecdotes } =
   anecdoteSlice.actions;
 export const notificationReducer = notificationSlice.reducer;
-export const { setNotification, showNotification, hideNotification } =
+export const { setNotification, showNotification, hideNotification, setTimeoutID } =
   notificationSlice.actions;
 export const filterReducer = filterSlice.reducer;
 export const { setFilter, resetFilter } = filterSlice.actions;
@@ -104,6 +108,7 @@ export const sendNotification = (message, time) => {
   return async (dispatch) => {
     dispatch(setNotification(message));
     dispatch(showNotification());
-    setTimeout(() => dispatch(hideNotification()), time);
+    const timeoutID = setTimeout(() => dispatch(hideNotification()), time);
+    dispatch(setTimeoutID(timeoutID));
   };
 };

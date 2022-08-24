@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
+import Button from "./Button";
 
 const Login = ({ handleLogin }) => {
   const [username, setUsername] = useState("");
@@ -32,7 +33,7 @@ const Login = ({ handleLogin }) => {
         onChange={({ target }) => handlePasswordChange(target.value)}
       />
       <br></br>
-      <button id="login-button" type="submit">Login</button>
+      <Button id="login-button" type="submit">Login</Button>
     </form>
   );
 };

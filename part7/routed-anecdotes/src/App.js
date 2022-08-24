@@ -51,7 +51,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className='container'>
       <h1>Software anecdotes</h1>
       <Menu addNew={addNew} anecdotes={anecdotes} notification={showNotification}/>
       { notification && <Notification notification={notification}/> }

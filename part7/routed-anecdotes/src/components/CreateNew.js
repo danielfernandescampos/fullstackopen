@@ -1,4 +1,5 @@
 import { useField } from "../hooks";
+import { Form, Button } from "react-bootstrap";
 
 const CreateNew = (props) => {
   const content = useField("text");
@@ -25,27 +26,22 @@ const CreateNew = (props) => {
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          {" "}
-          content
-          <input {...content} />
-        </div>
-        <div>
-          {" "}
-          author
-          <input {...author} />
-        </div>
-        <div>
-          {" "}
-          url for more info
-          <input {...info} />
-        </div>
-        <button type="submit">create</button>
-        <button type="button" onClick={resetForm}>
-          reset
-        </button>
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>content</Form.Label>
+          <Form.Control {...content} />
+          <Form.Label>author</Form.Label>
+          <Form.Control {...author} />
+          <Form.Label>url for more info</Form.Label>
+          <Form.Control {...info} />
+          <Button variant="primary" type="submit">
+            create
+          </Button>
+          <Button variant="secondary" onClick={resetForm}>
+            reset
+          </Button>
+        </Form.Group>
+      </Form>
     </div>
   );
 };

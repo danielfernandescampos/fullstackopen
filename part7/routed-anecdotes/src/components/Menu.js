@@ -1,3 +1,4 @@
+import { Nav, Navbar } from "react-bootstrap"
 import { Link, Route, Routes, useMatch } from "react-router-dom"
 import About from "./About"
 import Anecdote from "./Anecdote"
@@ -13,19 +14,25 @@ const Menu = ({addNew, anecdotes, notification}) => {
       paddingRight: 5
     }
     return (
-      <div>
-         <div>
+      <>
+      <Navbar collapseOnSelect expand="lg" bg="light" variant="dark">
+        <Nav.Link href="#" as="span">
           <Link style={padding} to="/">anecdotes</Link>
+        </Nav.Link>
+        <Nav.Link href="#" as="span">
           <Link style={padding} to="/create">create new</Link>
+        </Nav.Link>
+        <Nav.Link href="#" as="span">
           <Link style={padding} to="/about">about</Link>
-        </div>
-        <Routes>
-            <Route style={padding} path="/about" element={<About />} />
-            <Route style={padding} path="/create" element={<CreateNew addNew={addNew} setNotification={notification}/>} />
-            <Route style={padding} path="/" element={<AnecdoteList anecdotes={anecdotes}/>} />
-            <Route path="/anecdote/:id" element={<Anecdote anecdote={anecdoteSelected} />} />
-        </Routes>
-      </div>
+        </Nav.Link>
+      </Navbar>
+      <Routes>
+      <Route style={padding} path="/about" element={<About />} />
+      <Route style={padding} path="/create" element={<CreateNew addNew={addNew} setNotification={notification}/>} />
+      <Route style={padding} path="/" element={<AnecdoteList anecdotes={anecdotes}/>} />
+      <Route path="/anecdote/:id" element={<Anecdote anecdote={anecdoteSelected} />} />
+  </Routes>
+  </>
     )
   }
 

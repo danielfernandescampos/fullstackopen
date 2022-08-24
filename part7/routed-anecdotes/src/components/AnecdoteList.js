@@ -1,16 +1,22 @@
 import { Link } from "react-router-dom";
+import Table from 'react-bootstrap/Table';
 
 const AnecdoteList = ({ anecdotes }) => {
   return (
     <div>
       <h2>Anecdotes</h2>
-      <ul>
+      <Table striped>
+        <tbody>
         {anecdotes.map((anecdote) => (
-          <li key={anecdote.id}>
-            <Link to={`/anecdote/${anecdote.id}`}>{anecdote.content}</Link>
-          </li>
+          <tr key={anecdote.id}>
+            <td>
+              <Link to={`/anecdote/${anecdote.id}`}>{anecdote.content}</Link>
+            </td>
+            <td>{anecdote.author}</td>
+          </tr>
         ))}
-      </ul>
+        </tbody>
+      </Table>
     </div>
   );
 };

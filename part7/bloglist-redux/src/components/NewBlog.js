@@ -1,6 +1,9 @@
+import { connect } from "react-redux"
+import { createBlog } from "../reducers/reducer"
 import { useState } from "react";
 
-const NewBlog = ({ handleAddBlog }) => {
+const NewBlog = (props) => {
+  console.log(props.notification)
   const [blogTitle, setBlogTitle] = useState("");
   const [blogAuthor, setBlogAuthor] = useState("");
   const [blogUrl, setBlogUrl] = useState("");
@@ -16,7 +19,7 @@ const NewBlog = ({ handleAddBlog }) => {
       author: blogAuthor,
       url: blogUrl,
     };
-    handleAddBlog(newBlog);
+    props.createBlog(newBlog);
   };
 
   return (
@@ -56,4 +59,16 @@ const NewBlog = ({ handleAddBlog }) => {
   );
 };
 
-export default NewBlog;
+const mapStateToProps = (state) => {
+  return {
+    notification: state,
+  }
+}
+
+const mapDispatchToProps = {
+  createBlog
+}
+
+const ConnectedNewBlog = connect(mapStateToProps, mapDispatchToProps)(NewBlog)
+
+export default ConnectedNewBlog;

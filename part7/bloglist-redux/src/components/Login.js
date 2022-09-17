@@ -1,8 +1,10 @@
+import { connect } from "react-redux";
+import { handleLogin } from "../reducers/reducer"
 import { useState } from "react";
-import PropTypes from "prop-types";
 import Button from "./Button";
 
-const Login = ({ handleLogin }) => {
+const Login = (props) => {
+  console.log(props)
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleUsernameChange = (value) => setUsername(value);
@@ -10,7 +12,7 @@ const Login = ({ handleLogin }) => {
   const handleLoginButton = (event) => {
     event.preventDefault();
     const userCredentials = { username, password };
-    handleLogin(userCredentials);
+    props.handleLogin(userCredentials);
   };
 
   return (
@@ -38,8 +40,16 @@ const Login = ({ handleLogin }) => {
   );
 };
 
-Login.propTypes = {
-  handleLogin: PropTypes.func.isRequired,
-};
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
 
-export default Login;
+const mapDispatchToProps = {
+  handleLogin,
+}
+
+const ConnectedLogin = connect(mapStateToProps, mapDispatchToProps)(Login)
+
+export default ConnectedLogin

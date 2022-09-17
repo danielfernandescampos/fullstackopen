@@ -4,7 +4,6 @@ import { useState } from "react";
 import Button from "./Button";
 
 const Login = (props) => {
-  console.log(props)
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const handleUsernameChange = (value) => setUsername(value);

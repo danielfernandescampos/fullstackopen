@@ -3,7 +3,6 @@ import { createBlog } from "../reducers/reducer"
 import { useState } from "react";
 
 const NewBlog = (props) => {
-  console.log(props.notification)
   const [blogTitle, setBlogTitle] = useState("");
   const [blogAuthor, setBlogAuthor] = useState("");
   const [blogUrl, setBlogUrl] = useState("");

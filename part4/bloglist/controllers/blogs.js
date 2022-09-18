@@ -4,8 +4,16 @@ const User = require("../models/users");
 const jwt = require("jsonwebtoken");
 
 blogsRouter.get("/", async (request, response) => {
-  const blogs = await Blog.find({}).populate("user", { name: 1, username: 1 });
+  const blogs = await Blog.find({})
+    .populate("user", { name: 1, username: 1 })
+    .populate("comments", { comment: 1 })
   response.json(blogs);
+});
+
+blogsRouter.get("/:id", async (request, response) => {
+  const id = request.params.id
+  const blog = await Blog.findById(id)
+  response.json(blog);
 });
 
 blogsRouter.post("/", async (request, response) => {
@@ -23,7 +31,7 @@ blogsRouter.post("/", async (request, response) => {
   if (!newBlog.url || !newBlog.title)
     return response.status(400).json({ error: "missing properties" });
 
-  const blog = new Blog({ ...newBlog, user: user._id });
+  const blog = new Blog({ ...newBlog, user: user._id, comments: [] });
 
   const savedBlog = await blog.save();
 

@@ -1,6 +1,7 @@
 import { useState } from "react"
+import { Button } from "react-bootstrap"
 import { useDispatch } from "react-redux"
-import { addLike, handleAddComment } from "../reducers/reducer"
+import { addLike, handleAddComment } from "../../reducers/reducer"
 
 const BlogDetails = ({ blog }) => {
   const [comment, setComment] = useState("")
@@ -8,7 +9,12 @@ const BlogDetails = ({ blog }) => {
 
   const handleLike = () => {
     const newLikes = blog.likes ? blog.likes + 1 : 1
-    const updatedBlog = { ...blog, likes: newLikes }
+    const updatedBlog = {
+      author: blog.author,
+      title: blog.title,
+      id: blog.id,
+      likes: newLikes,
+    }
     dispatch(addLike(updatedBlog))
   }
 
@@ -33,15 +39,22 @@ const BlogDetails = ({ blog }) => {
       <a>{blog.link || "no link"}</a>
       <div>
         likes: {blog.likes}
-        <button onClick={handleLike}>like</button>
+        <Button onClick={handleLike} className="m-2">
+          like
+        </Button>
       </div>
       <p>added by {blog.author}</p>
       <h3>comments</h3>
       <form>
         <input onChange={handleInputChange} value={comment} />
-        <button type="submit" onClick={handleSubmit}>
+        <Button
+          type="submit"
+          onClick={handleSubmit}
+          variant="outline-secondary"
+          className="m-2"
+        >
           add
-        </button>
+        </Button>
       </form>
       <ul>
         {blog.comments?.map((comment) => (

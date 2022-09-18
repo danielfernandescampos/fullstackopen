@@ -1,11 +1,11 @@
 import { useEffect } from "react"
 import { connect, useDispatch } from "react-redux"
-import Login from "../components/Login"
-import { setLoggedUser } from "../reducers/reducer"
-import blogService from "../services/blogs"
+import Login from "../Login/Login"
+import { setLoggedUser } from "../../reducers/reducer"
+import blogService from "../../services/blogs"
+import { Button } from "react-bootstrap"
 
 const Home = (props) => {
-  console.log(props)
   const user = props.loggedUser
   const dispatch = useDispatch()
 
@@ -20,6 +20,10 @@ const Home = (props) => {
 
   const style = {
     display: "flex",
+    alignItems: "center",
+    position: "absolute",
+    zIndex: 1,
+    right: 0,
   }
 
   const handleLogout = () => {
@@ -33,12 +37,10 @@ const Home = (props) => {
         <Login />
       ) : (
         <div style={style}>
-          <p>
-            <strong>{user.name}</strong> is logged in
-          </p>
-          <button id="logout-button" onClick={handleLogout}>
+          <strong>{`${user.name} `}</strong> is logged in
+          <Button id="logout-button" onClick={handleLogout} variant="secondary" className="m-2">
             Log out
-          </button>
+          </Button>
         </div>
       )}
     </div>

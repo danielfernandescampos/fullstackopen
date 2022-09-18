@@ -1,6 +1,7 @@
 import { connect } from "react-redux"
-import { createBlog } from "../reducers/reducer"
+import { createBlog } from "../../reducers/reducer"
 import { useState } from "react";
+import { Button } from "react-bootstrap";
 
 const NewBlog = (props) => {
   const [blogTitle, setBlogTitle] = useState("");
@@ -52,7 +53,7 @@ const NewBlog = (props) => {
           onChange={({ target }) => handleBlogUrlChange(target.value)}
         />
         <br></br>
-        <button type="submit">Create</button>
+        <Button variant="secondary" type="submit">Create</Button>
       </form>
     </>
   );

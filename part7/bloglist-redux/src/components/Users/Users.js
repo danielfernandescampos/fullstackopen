@@ -1,7 +1,8 @@
 import { useEffect } from "react"
+import { Table } from "react-bootstrap"
 import { connect, useDispatch } from "react-redux"
 import { Link } from "react-router-dom"
-import { initializeUsers } from "../reducers/reducer"
+import { initializeUsers } from "../../reducers/reducer"
 
 const Users = (props) => {
   const users = props.users
@@ -10,34 +11,28 @@ const Users = (props) => {
     dispatch(initializeUsers())
   }, [])
 
-  const style = {
-    textAlign: "left",
-    padding: 2,
-    paddingRight: 30,
-  }
-
   return (
     <>
       <h2>users</h2>
       {users && (
-        <table>
+        <Table>
           <thead>
             <tr>
-              <th style={style}>name</th>
-              <th style={style}>blogs created</th>
+              <th>name</th>
+              <th>blogs created</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
-                <Link to={`/user/${user.id}`}>
-                  <td style={style}>{user.name}</td>
-                </Link>
-                <td style={style}>{user.blogs.length}</td>
+                <td>
+                  <Link to={`/user/${user.id}`}>{user.name}</Link>
+                </td>
+                <td>{user.blogs.length}</td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       )}
     </>
   )

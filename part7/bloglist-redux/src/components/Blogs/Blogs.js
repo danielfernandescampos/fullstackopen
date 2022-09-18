@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react"
 import { connect, useDispatch } from "react-redux"
-import { initializeBlogs } from "../reducers/reducer"
+import { initializeBlogs } from "../../reducers/reducer"
 import ConnectedBlog from "./Blog"
 import ConnectedNewBlog from "./NewBlog"
-import Togglable from "./Togglable"
+import Togglable from "../Shared/Togglable"
+import { Table } from "react-bootstrap"
 
 const Blogs = (props) => {
   const blogs = props.blogs
@@ -24,19 +25,22 @@ const Blogs = (props) => {
 
   return (
     <>
+      <h3>blogs list</h3>
       <Togglable buttonLabel="New blog" ref={blogRef}>
         <ConnectedNewBlog />
       </Togglable>
       <br></br>
-      <h3>blogs list</h3>
       {/* <button onClick={handleSort}>sort by likes</button> */}
       <br></br>
-      {blogs.map((blog) => (
-        <ConnectedBlog
-          key={blog.id}
-          blog={blog}
-        ></ConnectedBlog>
-      ))}
+      <Table striped>
+        <tbody>
+          {blogs.map((blog) => (
+            <tr key={blog.id}>
+              <ConnectedBlog blog={blog}></ConnectedBlog>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </>
   )
 }

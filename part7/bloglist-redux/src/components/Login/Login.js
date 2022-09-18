@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
-import { handleLogin } from "../reducers/reducer"
+import { handleLogin } from "../../reducers/reducer"
 import { useState } from "react";
-import Button from "./Button";
+import Button from "../Shared/Button";
 
 const Login = (props) => {
   const [username, setUsername] = useState("");

@@ -1,16 +1,17 @@
 import { connect } from "react-redux"
 import "./App.css"
-import HomeConnected from "./components/Home"
-import MenuConnected from "./components/Menu"
-import Message from "./components/Message"
+import HomeConnected from "./components/Home/Home"
+import MenuConnected from "./components/Menu/Menu"
+import Message from "./components/Shared/Message"
 
 const App = (props) => {
   const notification = props.notification
+  const user = props.loggedUser
 
   return (
     <>
       <HomeConnected></HomeConnected>
-      <MenuConnected></MenuConnected>
+      {user && <MenuConnected></MenuConnected>}
       {notification.show && <Message notification={notification} />}
     </>
   )
@@ -19,6 +20,7 @@ const App = (props) => {
 const mapStateToProps = (state) => {
   return {
     notification: state.notification,
+    loggedUser: state.loggedUser
   }
 }
 

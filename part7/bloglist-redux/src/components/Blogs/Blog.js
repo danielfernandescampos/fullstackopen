@@ -1,7 +1,8 @@
 import { useState } from "react"
+import { Button } from "react-bootstrap"
 import { connect } from "react-redux"
 import { Link } from "react-router-dom"
-import { addLike, handleDelete } from "../reducers/reducer"
+import { addLike, handleDelete } from "../../reducers/reducer"
 
 const Blog = (props) => {
   const [showDetails, setShowDetails] = useState(false)
@@ -20,29 +21,36 @@ const Blog = (props) => {
     props.handleDelete(id)
   }
   return (
-    <div className="blog">
-      <Link to={`/blog/${blog.id}`}>{blog.title}</Link>
-      <button onClick={handleShowDetails}>view</button>
+    <td className="blog">
+      <div className="d-flex justify-content-between align-items-center">
+        <Link to={`/blog/${blog.id}`}>{blog.title}</Link>
+        <Button
+          onClick={handleShowDetails}
+          variant="outline-secondary"
+        >
+          view
+        </Button>
+      </div>
       {showDetails && (
         <div className="blog-details">
           <p>author: {blog.author || "-"}</p>
           <p>url: {blog.url || "-"}</p>
           <p>likes: {blog.likes}</p>
-          <button id="like-button" onClick={() => handleLike(blog)}>
+          <Button id="like-button" onClick={() => handleLike(blog)}>
             like
-          </button>
+          </Button>
           {loggedUser.username === blog.user?.username && (
-            <button
+            <Button
+              variant="danger"
               id="delete-button"
               onClick={() => handleDelete(blog.id)}
-              style={{ background: "#FA7b6c" }}
             >
               delete
-            </button>
+            </Button>
           )}
         </div>
       )}
-    </div>
+    </td>
   )
 }
 

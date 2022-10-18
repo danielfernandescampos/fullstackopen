@@ -38,7 +38,7 @@ const typeDefs = gql`
   type Author {
     name: String!
     born: Int
-    bookCount: Int!
+    bookCount: Int
   }
   type Book {
     title: String!

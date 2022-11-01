@@ -5,7 +5,7 @@ const BooksRecommend = (props) => {
 
   const favouriteGenre = props.user.data.me.favouriteGenre
   const books = useQuery(ALL_BOOKS)
-  const booksShow = books.data.allBooks.filter(
+  const booksShow = books.data?.allBooks.filter(
     book => book.genres.includes(favouriteGenre)
   )
 

@@ -39,6 +39,7 @@ const typeDefs = gql`
     name: String!
     born: Int
     bookCount: Int
+    books: [Book]
   }
   type Book {
     title: String!
@@ -54,6 +55,10 @@ const typeDefs = gql`
   }
   type Token {
     value: String!
+  }
+
+  type Subscription {
+    bookAdded: Book!
   }
 `;
 

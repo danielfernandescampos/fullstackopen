@@ -6,7 +6,6 @@ import BooksRecommend from "./components/BooksRecommend";
 import LoginForm from "./components/LoginForm";
 import Message from "./components/Message";
 import NewBook from "./components/NewBook";
-import updateCache from "./helpers/updateCache";
 import { ALL_BOOKS, ME } from "./services/library-graphql-queries";
 import { BOOK_ADDED } from "./services/library-graphql-subscriptions";
 
@@ -15,7 +14,7 @@ const App = () => {
   const [token, setToken] = useState(null);
   const [notification, setNotification] = useState({});
   const client = useApolloClient();
-  const user = useQuery(ME)
+  const user = useQuery(ME);
 
   const logout = () => {
     setToken(null);
@@ -29,22 +28,23 @@ const App = () => {
       type: "error",
       message: message,
     });
-    setTimeout(() => { setNotification({}) }, 3000)
+    setTimeout(() => {
+      setNotification({});
+    }, 3000);
   };
 
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      const addedBook = subscriptionData.data.bookAdded
-      notify(`${addedBook.title} added`)
-      updateCache(client.cache, { query: BOOK_ADDED }, addedBook)
+      const addedBook = subscriptionData.data.bookAdded;
+      notify(`${addedBook.title} added`);
 
-      // client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
-      //   return {
-      //     allBooks: allBooks.concat(addedBook),
-      //   }
-      // })
-    }
-  })
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(addedBook),
+        };
+      });
+    },
+  });
 
   let localToken = localStorage.getItem("library-user-token", token);
 
@@ -57,22 +57,24 @@ const App = () => {
       </>
     );
 
-  if(user.loading) return null
+  if (user.loading) return null;
 
   return (
     <div>
       <Message notification={notification} />
-      <div style={{display: 'flex'}}>
+      <div style={{ display: "flex" }}>
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>
         <button onClick={() => setPage("recommend")}>recommend</button>
         <button onClick={() => setPage("add")}>add book</button>
-        <button onClick={logout} style={{marginLeft: 'auto'}}>logout</button>
+        <button onClick={logout} style={{ marginLeft: "auto" }}>
+          logout
+        </button>
       </div>
 
       <Authors show={page === "authors"} />
       <Books show={page === "books"} />
-      <BooksRecommend show={page === "recommend"} user={user}/>
+      <BooksRecommend show={page === "recommend"} user={user} />
       <NewBook show={page === "add"} />
     </div>
   );
